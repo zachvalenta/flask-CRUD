@@ -16,7 +16,11 @@ Scaffold for Flask CRUD apps
 🛠  UTILS
 
 flask:      start built-in Flask dev server
-get:        hit index endpoint
+seed:       seed db
+home:       open home page
+api:        hit API
+repl:       open bpython REPL w/ db obj loaded
+lite:       connect to SQLite w/ litecli
 
 📊 CODE QUALITY
 
