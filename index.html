@@ -10,6 +10,19 @@
 
 <body>
     <h1>Flask CRUD</h1>
+
+    <h2>search</h2>
+    <hr>
+    <br>
+    <form action="{{ url_for('search') }}" method="post">
+        <input type="text" name="query" style="width: 200px">
+        <input type="submit">
+    </form>
+
+    <form action="{{ url_for('index') }}">
+        <input type="submit" value="Clear">
+    </form>
+
     <h2>things</h2>
     <table>
         <thead>

@@ -1,6 +1,6 @@
 import os
 
-from app import Thing, app, db
+from app import Thing, app, db, search_things
 
 """
 CONF
@@ -51,3 +51,12 @@ def test_get_api():
     res = client.get("/api")
     assert len(res.json["results"]) == 2
     assert res.json["results"][0]["name"] == "thing1"
+
+
+def test_search():
+    db.session.add(Thing(name="thing1", description="thing1 description"))
+    db.session.add(Thing(name="thing2", description="thing2 description"))
+    db.session.add(Thing(name="thing3", description="thing3 description"))
+    db.session.commit()
+    res = search_things(name="thing2")
+    assert len(res) == 1

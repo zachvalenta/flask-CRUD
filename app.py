@@ -1,7 +1,7 @@
 import os
 
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
@@ -60,7 +60,19 @@ def api():
     return {"results": results}
 
 
+@app.route("/search", methods=["POST"])
+def search():
+    results = search_things(name=request.form["query"])
+    return render_template("index.html", results=results)
+
+
 def get_things():
     things = Thing.query.all()
+    thing_schema = ThingSchema(many=True)
+    return thing_schema.dump(things)
+
+
+def search_things(name):
+    things = Thing.query.filter_by(name=name).all()
     thing_schema = ThingSchema(many=True)
     return thing_schema.dump(things)
