@@ -42,7 +42,7 @@ api:
 	poetry run http http://localhost:5000/api
 
 home:
-	open http://localhost:5000
+	open index.html
 
 repl:
 	poetry run bpython -i db_repl.py

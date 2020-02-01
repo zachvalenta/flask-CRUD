@@ -9,24 +9,32 @@
 </head>
 
 <body>
-    <h1>Flask CRUD</h1>
-    <h2>things</h2>
-    <table>
-        <thead>
-            <th>id</th>
-            <th>name</th>
-            <th>description</th>
-        </thead>
-        <tbody>
-            {% for i in results %}
-            <tr>
-                <td>{{ i.thing_id }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.description }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div id="root">
+
+        <h1> {{ appName }} </h1>
+
+        <h2>things</h2>
+        <table>
+            <thead>
+                <th>id</th>
+                <th>name</th>
+                <th>description</th>
+            </thead>
+            <tbody>
+                <tr v-for="i in things">
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.desc }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <script type="text/javascript" src="https://unpkg.com/vue"></script>
+    <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="main.js"></script>
 
 </body>
 </html>

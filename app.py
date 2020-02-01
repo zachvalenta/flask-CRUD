@@ -2,6 +2,7 @@ import os
 
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, render_template
+from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
@@ -23,6 +24,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 # db - init
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+CORS(app)  # watch ordering here
 
 """
 MODEL & SCHEMA

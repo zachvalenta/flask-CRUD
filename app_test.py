@@ -39,11 +39,6 @@ TESTS
 """
 
 
-def test_get_index():
-    res = client.get("/")
-    assert res.status_code == 200
-
-
 def test_get_api():
     db.session.add(Thing(name="thing1", description="thing1 description"))
     db.session.add(Thing(name="thing2", description="thing2 description"))
