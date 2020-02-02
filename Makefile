@@ -23,6 +23,7 @@ help:
 	@echo "cov:        view HTML coverage report in browser"
 	@echo "lint:       lint using flake8"
 	@echo "fmt:        autoformat using black"
+	@echo "hooks:      set Git hooks w/ pre-commit"
 	@echo
 	@echo "📦 DEPENDENCIES"
 	@echo
@@ -76,6 +77,9 @@ lint:
 
 fmt:
 	poetry run isort *.py; poetry run black *.py
+
+hooks:
+	poetry run pre-commit install -t pre-push
 
 #
 # 📦 DEPENDENCIES
