@@ -7,13 +7,17 @@ help:
 	@echo "🛠  UTILS"
 	@echo
 	@echo "flask:      start built-in Flask dev server"
-	@echo "seed:       seed db"
 	@echo "home:       open home page"
 	@echo "api:        hit API"
+	@echo
+	@echo "📊 DATA"
+	@echo
+	@echo "seed:       seed db"
 	@echo "repl:       open bpython REPL w/ db obj loaded"
 	@echo "lite:       connect to SQLite w/ litecli"
+	@echo "vd:         connect to SQLite w/ visidata"
 	@echo
-	@echo "📊 CODE QUALITY"
+	@echo "🤖 CODE QUALITY"
 	@echo
 	@echo "test:       run unit tests, view basic coverage report in terminal"
 	@echo "cov:        view HTML coverage report in browser"
@@ -35,14 +39,18 @@ help:
 flask:
 	poetry run flask run
 
-seed:
-	rm local.db; poetry run python db_seed.py
+home:
+	open http://localhost:5000
 
 api:
 	poetry run http http://localhost:5000/api
 
-home:
-	open http://localhost:5000
+#
+# 📊 DATA
+#
+
+seed:
+	rm local.db; poetry run python db_seed.py
 
 repl:
 	poetry run bpython -i db_repl.py
@@ -50,8 +58,11 @@ repl:
 lite:
 	poetry run litecli local.db
 
+vd:
+	poetry run vd local.db
+
 #
-# 📊 CODE QUALITY
+# 🤖 CODE QUALITY
 #
 
 test:
