@@ -79,7 +79,7 @@ fmt:
 	poetry run isort *.py; poetry run black *.py
 
 hooks:
-	poetry run pre-commit install -t pre-push
+	poetry run pre-commit install -t pre-commit; poetry run pre-commit install -t pre-push
 
 #
 # 📦 DEPENDENCIES
