@@ -9,6 +9,7 @@ help:
 	@echo "flask:      start built-in Flask dev server"
 	@echo "home:       open home page"
 	@echo "api:        hit API"
+	@echo "todo:       view all todos"
 	@echo
 	@echo "📊 DATA"
 	@echo
@@ -45,6 +46,9 @@ home:
 
 api:
 	poetry run http http://localhost:5000/api
+
+todo:
+	rg -i -B 3 -A 3 todo *.py
 
 #
 # 📊 DATA

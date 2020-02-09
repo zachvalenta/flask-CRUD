@@ -10,7 +10,7 @@ db.create_all()
 fake = Faker()
 things = []
 
-for _ in range(1, 100):
+for _ in range(0, 100):
     thing = Thing(name=fake.word(), description=fake.sentence())
     things.append(thing)
 
