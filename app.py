@@ -50,7 +50,14 @@ ROUTES
 
 @app.route("/")
 def index():
-    results = get_things()
+    # TODO: redirect / to /page/1
+    results = Thing.query.paginate(page=1)
+    return render_template("index.html", results=results)
+
+
+@app.route("/page/<int:page_num>")
+def get_page(page_num):
+    results = Thing.query.paginate(page=page_num)
     return render_template("index.html", results=results)
 
 

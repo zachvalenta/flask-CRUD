@@ -31,7 +31,7 @@
             <th>description</th>
         </thead>
         <tbody>
-            {% for i in results %}
+            {% for i in results.items %}
             <tr>
                 <td>{{ i.thing_id }}</td>
                 <td>{{ i.name }}</td>
@@ -40,6 +40,16 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% for page in results.iter_pages() %}
+
+        {% if page %}
+        <a href="{{ url_for('get_page', page_num=page) }}">{{ page }}</a>
+        {% else %}
+          ...
+        {% endif %}
+
+    {% endfor %}
 
 </body>
 </html>

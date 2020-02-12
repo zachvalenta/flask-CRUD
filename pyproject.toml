@@ -21,6 +21,9 @@ flake8 = "^3.7.9"
 isort = "^4.3.21"
 litecli = "^1.2.0"
 bpython = "^0.18"
+visidata = "^1.5.2"
+pre-commit = "^2.0.1"
+faker = "^4.0.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

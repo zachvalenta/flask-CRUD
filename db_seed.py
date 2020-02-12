@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 
+from faker import Faker
+
 from app import Thing, db
 
 print("\n 🌱 seeding db... \n")
-
 db.drop_all()
 db.create_all()
+fake = Faker()
+things = []
 
-things = [
-    Thing(name="thing1", description="thing 1 desc"),
-    Thing(name="thing2", description="thing 2 desc"),
-]
+for _ in range(0, 100):
+    thing = Thing(name=fake.word(), description=fake.sentence())
+    things.append(thing)
 
 db.session.bulk_save_objects(things)
 db.session.commit()
-
 print("\n 🌿 done \n")
-print(f"things {Thing.query.all()} \n")
