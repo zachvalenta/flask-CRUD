@@ -9,8 +9,11 @@
 </head>
 
 <body>
+
+    <!-- TITLE -->
     <h1>Flask CRUD</h1>
 
+    <!-- SEARCH -->
     <h2>search</h2>
     <hr>
     <br>
@@ -18,11 +21,11 @@
         <input type="text" name="query" style="width: 200px">
         <input type="submit">
     </form>
-
     <form action="{{ url_for('index') }}">
         <input type="submit" value="Clear">
     </form>
 
+    <!-- LISTVIEW -->
     <h2>things</h2>
     <table>
         <thead>
@@ -41,15 +44,16 @@
         </tbody>
     </table>
 
-    {% for page in results.iter_pages() %}
-
-        {% if page %}
-        <a href="{{ url_for('get_page', page_num=page) }}">{{ page }}</a>
-        {% else %}
-          ...
-        {% endif %}
-
-    {% endfor %}
-
+    <!-- PAGINATION -->
+    {% if query %}
+        {% for page in pages %}
+            <a href="{{ url_for('get_search_page', page=page, query=query) }}">{{ page }}</a>
+        {% endfor %}
+    {% else %}
+        {% for page in pages %}
+            <a href="{{ url_for('get_page', page=page) }}">{{ page }}</a>
+        {% endfor %}
+    {% endif %}
+    
 </body>
 </html>

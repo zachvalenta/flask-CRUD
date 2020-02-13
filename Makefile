@@ -45,7 +45,7 @@ home:
 	open http://localhost:5000
 
 api:
-	poetry run http http://localhost:5000/api
+	poetry run http http://localhost:5000/api/all
 
 todo:
 	rg -i -B 3 -A 3 todo *.py

@@ -50,36 +50,50 @@ ROUTES
 
 @app.route("/")
 def index():
-    # TODO: redirect / to /page/1
     results = Thing.query.paginate(page=1)
-    return render_template("index.html", results=results)
+    pages = [x for x in results.iter_pages()]
+    return render_template("index.html", results=results, pages=pages)
 
 
-@app.route("/page/<int:page_num>")
-def get_page(page_num):
-    results = Thing.query.paginate(page=page_num)
-    return render_template("index.html", results=results)
-
-
-@app.route("/api")
-def api():
-    results = get_things()
-    return {"results": results}
+@app.route("/page/<int:page>")
+def get_page(page):
+    results = Thing.query.paginate(page=page)
+    pages = [x for x in results.iter_pages()]
+    return render_template("index.html", results=results, pages=pages)
 
 
 @app.route("/search", methods=["POST"])
 def search():
-    results = search_things(name=request.form["query"])
-    return render_template("index.html", results=results)
+    query = request.form["query"]
+    results = Thing.query.filter_by(name=query).paginate(page=1)
+    pages = [x for x in results.iter_pages()]
+    return render_template("index.html", results=results, pages=pages, query=query)
 
 
-def get_things():
+@app.route("/page/<int:page>/<string:query>")
+def get_search_page(page, query):
+    results = Thing.query.filter_by(name=query).paginate(page=page)
+    pages = [x for x in results.iter_pages()]
+    return render_template("index.html", results=results, pages=pages, query=query)
+
+
+"""
+API
+"""
+
+
+@app.route("/api/all")
+def api_all():
     things = Thing.query.all()
     thing_schema = ThingSchema(many=True)
-    return thing_schema.dump(things)
+    serialized = thing_schema.dump(things)
+    return {"results": serialized}
 
 
-def search_things(name):
-    things = Thing.query.filter_by(name=name).all()
+@app.route("/api/search")
+def api_search():
+    query = request.args.get("name")
+    things = Thing.query.filter_by(name=query).all()
     thing_schema = ThingSchema(many=True)
-    return thing_schema.dump(things)
+    serialized = thing_schema.dump(things)
+    return {"results": serialized}

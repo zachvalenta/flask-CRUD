@@ -1,6 +1,6 @@
 import os
 
-from app import Thing, app, db, search_things
+from app import Thing, app, db
 
 """
 CONF
@@ -44,19 +44,19 @@ def test_get_index():
     assert res.status_code == 200
 
 
-def test_get_api():
+def test_api_all():
     db.session.add(Thing(name="thing1", description="thing1 description"))
     db.session.add(Thing(name="thing2", description="thing2 description"))
     db.session.commit()
-    res = client.get("/api")
+    res = client.get("/api/all")
     assert len(res.json["results"]) == 2
     assert res.json["results"][0]["name"] == "thing1"
 
 
-def test_search():
+def test_api_search():
     db.session.add(Thing(name="thing1", description="thing1 description"))
     db.session.add(Thing(name="thing2", description="thing2 description"))
     db.session.add(Thing(name="thing3", description="thing3 description"))
     db.session.commit()
-    res = search_things(name="thing2")
-    assert len(res) == 1
+    res = client.get("/api/search?name=thing2")
+    assert len(res.json["results"]) == 1
