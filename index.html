@@ -14,6 +14,15 @@
 
         <h1> {{ appName }} </h1>
 
+        <div>
+            <input v-model.lazy="query" placeholder="search by name" v-on:keyup.enter="search">
+            <button type="submit" v-on:click.prevent="search">search</button>
+        </div>
+
+        <div>
+            <button type="submit" v-on:click.prevent="api">clear</button>
+        </div>
+
         <h2>things</h2>
         <table>
             <thead>

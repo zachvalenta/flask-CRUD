@@ -9,7 +9,8 @@ help:
 	@echo "flask:      start built-in Flask dev server"
 	@echo "seed:       seed db"
 	@echo "home:       open home page"
-	@echo "api:        hit API"
+	@echo "api:        hit index endpoint"
+	@echo "search:     hit search endpoint"
 	@echo "repl:       open bpython REPL w/ db obj loaded"
 	@echo "lite:       connect to SQLite w/ litecli"
 	@echo
@@ -40,6 +41,9 @@ seed:
 
 api:
 	poetry run http http://localhost:5000/api
+
+search:
+	poetry run http http://localhost:5000/search?query=thing2
 
 home:
 	open index.html

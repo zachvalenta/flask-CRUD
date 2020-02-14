@@ -1,7 +1,7 @@
 import os
 
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
@@ -66,3 +66,12 @@ def get_things():
     things = Thing.query.all()
     thing_schema = ThingSchema(many=True)
     return thing_schema.dump(things)
+
+
+@app.route("/search")
+def search_by_name():
+    query = request.args.get("query")
+    things = Thing.query.filter_by(name=query).all()
+    thing_schema = ThingSchema(many=True)
+    results = thing_schema.dump(things)
+    return {"results": results}
