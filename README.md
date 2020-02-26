@@ -1,6 +1,6 @@
 # what is this?
 
-Scaffold for Flask CRUD apps
+Scaffold for Flask CRUD apps; similar to [another project](https://github.com/zachvalenta/flask-skeleton) I have but with pagination and search.
 
 # how to use?
 
