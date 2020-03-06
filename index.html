@@ -17,11 +17,11 @@
     <h2>search</h2>
     <hr>
     <br>
-    <form action="{{ url_for('search') }}" method="post">
+    <form action="{{ url_for('do_search') }}" method="post">
         <input type="text" name="query" style="width: 200px">
         <input type="submit">
     </form>
-    <form action="{{ url_for('index') }}">
+    <form action="{{ url_for('get_index') }}">
         <input type="submit" value="Clear">
     </form>
 
@@ -30,15 +30,19 @@
     <table>
         <thead>
             <th>id</th>
-            <th>name</th>
-            <th>description</th>
+            <th>rating</th>
+            <th>song</th>
+            <th>artist</th>
+            <th>concert</th>
         </thead>
         <tbody>
-            {% for i in results.items %}
+            {% for i in results %}
             <tr>
-                <td>{{ i.thing_id }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.description }}</td>
+                <td>{{ i.perf_id }}</td>
+                <td>{{ i.rating }}</td>
+                <td>{{ i.song.name }}</td>
+                <td>{{ i.song.artist.name }}</td>
+                <td>{{ i.concert.name }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -47,11 +51,19 @@
     <!-- PAGINATION -->
     {% if query %}
         {% for page in pages %}
-            <a href="{{ url_for('get_search_page', page=page, query=query) }}">{{ page }}</a>
+            {% if page %}
+                <a href="{{ url_for('get_search_page', page=page, query=query) }}">{{ page }}</a>
+            {% else %}
+                ...
+            {% endif %}
         {% endfor %}
     {% else %}
         {% for page in pages %}
-            <a href="{{ url_for('get_page', page=page) }}">{{ page }}</a>
+            {% if page %}
+                <a href="{{ url_for('get_page', page=page) }}">{{ page }}</a>
+            {% else %}
+                ...
+            {% endif %}
         {% endfor %}
     {% endif %}
     

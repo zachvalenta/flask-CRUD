@@ -1,6 +1,7 @@
 import os
+from random import randint
 
-from app import Thing, app, db
+from app import Artist, Concert, Performance, Song, app, db, search
 
 """
 CONF
@@ -44,19 +45,20 @@ def test_get_index():
     assert res.status_code == 200
 
 
-def test_api_all():
-    db.session.add(Thing(name="thing1", description="thing1 description"))
-    db.session.add(Thing(name="thing2", description="thing2 description"))
+def test_search():
+    db.session.add(Song(name="Slippery When Wet"))
+    db.session.add(Artist(name="Commodores"))
+    db.session.add(Concert(name="Glastonbury"))
+    db.session.add(Performance(rating=randint(5, 10), song_id=1, concert_id=1))
     db.session.commit()
-    res = client.get("/api/all")
-    assert len(res.json["results"]) == 2
-    assert res.json["results"][0]["name"] == "thing1"
+    res = search(query="Slippery When Wet", page=1)
+    assert res.items[0].song.name == "Slippery When Wet"
 
 
-def test_api_search():
-    db.session.add(Thing(name="thing1", description="thing1 description"))
-    db.session.add(Thing(name="thing2", description="thing2 description"))
-    db.session.add(Thing(name="thing3", description="thing3 description"))
-    db.session.commit()
-    res = client.get("/api/search?name=thing2")
-    assert len(res.json["results"]) == 1
+def test_get_perf_by_id():
+    db.session.add(Song(name="Slippery When Wet"))
+    db.session.add(Artist(name="Commodores"))
+    db.session.add(Concert(name="Glastonbury"))
+    db.session.add(Performance(rating=randint(5, 10), song_id=1, concert_id=1))
+    res = client.get("/api/performances/1")
+    assert res.json["perf_id"] == 1

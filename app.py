@@ -25,22 +25,76 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 """
-MODEL & SCHEMA
+MODELS
 """
 
 
-class Thing(db.Model):
-    thing_id = db.Column(db.Integer, primary_key=True)
+class Artist(db.Model):
+    artist_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
-    description = db.Column(db.Text)
+    songs = db.relationship("Song", backref="artist")
 
     def __repr__(self):
-        return f"id {self.thing_id} name {self.name} desc {self.description}"
+        return f"id {self.artist_id} name {self.name}"
 
 
-class ThingSchema(ma.ModelSchema):
+class Song(db.Model):
+    song_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    artist_id = db.Column(db.Integer, db.ForeignKey("artist.artist_id"))
+    performances = db.relationship("Performance", backref="song")
+
+    def __repr__(self):
+        return f"id {self.song_id} name {self.name}"
+
+
+class Performance(db.Model):
+    perf_id = db.Column(db.Integer, primary_key=True)
+    rating = db.Column(db.Integer, nullable=False)
+    song_id = db.Column(db.Integer, db.ForeignKey("song.song_id"))
+    concert_id = db.Column(db.Integer, db.ForeignKey("concert.concert_id"))
+
+    def __repr__(self):
+        return f"id {self.perf_id} rating {self.rating}"
+
+
+class Concert(db.Model):
+    concert_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    performances = db.relationship("Performance", backref="concert")
+
+    def __repr__(self):
+        return f"id {self.concert_id} name {self.name}"
+
+
+"""
+SCHEMAS
+"""
+
+
+class ArtistSchema(ma.ModelSchema):
     class Meta:
-        model = Thing
+        model = Artist
+
+
+class SongSchema(ma.ModelSchema):
+    class Meta:
+        model = Song
+
+    artist = ma.Nested(ArtistSchema)
+
+
+class ConcertSchema(ma.ModelSchema):
+    class Meta:
+        model = Concert
+
+
+class PerformanceSchema(ma.ModelSchema):
+    class Meta:
+        model = Performance
+
+    song = ma.Nested(SongSchema)
+    concert = ma.Nested(ConcertSchema)
 
 
 """
@@ -48,33 +102,50 @@ ROUTES
 """
 
 
-@app.route("/")
-def index():
-    results = Thing.query.paginate(page=1)
+def search(query, page):
+    return (
+        db.session.query(Performance)
+        .join(Song)
+        .filter(Song.name == query)
+        .paginate(page=page)
+    )
+
+
+@app.route("/search", methods=["POST"])
+def do_search():
+    query = request.form["query"]
+    results = search(query=query, page=1)
     pages = [x for x in results.iter_pages()]
-    return render_template("index.html", results=results, pages=pages)
+    performance_schema = PerformanceSchema(many=True)
+    dump = performance_schema.dump(results.items)
+    return render_template("index.html", results=dump, pages=pages, query=query)
+
+
+@app.route("/")
+def get_index():
+    results = Performance.query.paginate(page=1)
+    pages = [x for x in results.iter_pages()]
+    performance_schema = PerformanceSchema(many=True)
+    dump = performance_schema.dump(results.items)
+    return render_template("index.html", results=dump, pages=pages)
 
 
 @app.route("/page/<int:page>")
 def get_page(page):
-    results = Thing.query.paginate(page=page)
+    results = Performance.query.paginate(page=page)
     pages = [x for x in results.iter_pages()]
-    return render_template("index.html", results=results, pages=pages)
-
-
-@app.route("/search", methods=["POST"])
-def search():
-    query = request.form["query"]
-    results = Thing.query.filter_by(name=query).paginate(page=1)
-    pages = [x for x in results.iter_pages()]
-    return render_template("index.html", results=results, pages=pages, query=query)
+    performance_schema = PerformanceSchema(many=True)
+    dump = performance_schema.dump(results.items)
+    return render_template("index.html", results=dump, pages=pages)
 
 
 @app.route("/page/<int:page>/<string:query>")
 def get_search_page(page, query):
-    results = Thing.query.filter_by(name=query).paginate(page=page)
+    results = search(query=query, page=page)
     pages = [x for x in results.iter_pages()]
-    return render_template("index.html", results=results, pages=pages, query=query)
+    performance_schema = PerformanceSchema(many=True)
+    dump = performance_schema.dump(results.items)
+    return render_template("index.html", results=dump, pages=pages, query=query)
 
 
 """
@@ -82,18 +153,8 @@ API
 """
 
 
-@app.route("/api/all")
-def api_all():
-    things = Thing.query.all()
-    thing_schema = ThingSchema(many=True)
-    serialized = thing_schema.dump(things)
-    return {"results": serialized}
-
-
-@app.route("/api/search")
-def api_search():
-    query = request.args.get("name")
-    things = Thing.query.filter_by(name=query).all()
-    thing_schema = ThingSchema(many=True)
-    serialized = thing_schema.dump(things)
-    return {"results": serialized}
+@app.route("/api/performances/<int:id>")
+def get_performance_single(id):
+    perf = Performance.query.get(id)
+    performance_schema = PerformanceSchema()
+    return performance_schema.dump(perf)
