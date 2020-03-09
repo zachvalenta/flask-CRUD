@@ -29,7 +29,7 @@ for s in songs:
     db.session.add(s)
 db.session.commit()
 
-for _ in range(0, 200):
+for _ in range(0, 500):
     performance = Performance(
         rating=randint(5, 10), song_id=randint(1, 6), concert_id=randint(1, 3)
     )

@@ -17,23 +17,22 @@
     <h2>search</h2>
     <hr>
     <br>
-    <form action="{{ url_for('do_search') }}" method="post">
+    <form action="{{ url_for('do_search', concert=results[0].concert.concert_id) }}" method="post">
         <input type="text" name="query" style="width: 200px">
         <input type="submit">
     </form>
-    <form action="{{ url_for('get_index') }}">
+    <form action="{{ url_for('get_perf_for_concert_first_page', concert=results[0].concert.concert_id) }}">
         <input type="submit" value="Clear">
     </form>
 
     <!-- LISTVIEW -->
-    <h2>things</h2>
+    <h2>concert - {{ results[0].concert.name }}</h2>
     <table>
         <thead>
             <th>id</th>
             <th>rating</th>
             <th>song</th>
             <th>artist</th>
-            <th>concert</th>
         </thead>
         <tbody>
             {% for i in results %}
@@ -42,8 +41,6 @@
                 <td>{{ i.rating }}</td>
                 <td>{{ i.song.name }}</td>
                 <td>{{ i.song.artist.name }}</td>
-                <td>{{ i.concert.name }}</td>
-            </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -52,7 +49,7 @@
     {% if query %}
         {% for page in pages %}
             {% if page %}
-                <a href="{{ url_for('get_search_page', page=page, query=query) }}">{{ page }}</a>
+                <a href="{{ url_for('get_perf_for_concert_page_query', concert=results[0].concert.concert_id, page=page, query=query) }}">{{ page }}</a>
             {% else %}
                 ...
             {% endif %}
@@ -60,12 +57,12 @@
     {% else %}
         {% for page in pages %}
             {% if page %}
-                <a href="{{ url_for('get_page', page=page) }}">{{ page }}</a>
+                <a href="{{ url_for('get_perf_for_concert_page', concert=results[0].concert.concert_id, page=page) }}">{{ page }}</a>
             {% else %}
                 ...
             {% endif %}
         {% endfor %}
     {% endif %}
-    
+
 </body>
 </html>

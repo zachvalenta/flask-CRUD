@@ -98,54 +98,73 @@ class PerformanceSchema(ma.ModelSchema):
 
 
 """
-ROUTES
+SEARCH
 """
 
 
-def search(query, page):
+def search(query, page, concert):
     return (
         db.session.query(Performance)
         .join(Song)
         .filter(Song.name == query)
+        .join(Concert)
+        .filter(Concert.concert_id == concert)
         .paginate(page=page)
     )
 
 
-@app.route("/search", methods=["POST"])
-def do_search():
+@app.route("/search/<int:concert>", methods=["POST"])
+def do_search(concert):
     query = request.form["query"]
-    results = search(query=query, page=1)
-    pages = [x for x in results.iter_pages()]
-    performance_schema = PerformanceSchema(many=True)
-    dump = performance_schema.dump(results.items)
-    return render_template("index.html", results=dump, pages=pages, query=query)
+    results = search(query=query, page=1, concert=concert)
+    if results.items:
+        pages = [x for x in results.iter_pages()]
+        performance_schema = PerformanceSchema(many=True)
+        dump = performance_schema.dump(results.items)
+        return render_template("perfs.html", results=dump, pages=pages, query=query)
+    else:
+        return render_template("404-search.html", concert=concert)
+
+
+"""
+TEMPLATES
+"""
 
 
 @app.route("/")
-def get_index():
-    results = Performance.query.paginate(page=1)
-    pages = [x for x in results.iter_pages()]
+@app.route("/concert")
+def get_concerts():
+    results = Concert.query.all()
+    concert_schema = ConcertSchema(many=True)
+    dump = concert_schema.dump(results)
+    return render_template("concert.html", results=dump)
+
+
+@app.route("/concert/<int:concert>")
+def get_perf_for_concert_first_page(concert):
+    performances = Performance.query.filter_by(concert_id=concert).paginate(page=1)
+    pages = [x for x in performances.iter_pages()]
     performance_schema = PerformanceSchema(many=True)
-    dump = performance_schema.dump(results.items)
-    return render_template("index.html", results=dump, pages=pages)
+    dump = performance_schema.dump(performances.items)
+    return render_template("perfs.html", results=dump, pages=pages)
 
 
-@app.route("/page/<int:page>")
-def get_page(page):
-    results = Performance.query.paginate(page=page)
-    pages = [x for x in results.iter_pages()]
+@app.route("/concert/<int:concert>/<int:page>")
+def get_perf_for_concert_page(concert, page):
+    performances = Performance.query.filter_by(concert_id=concert).paginate(page=page)
+    pages = [x for x in performances.iter_pages()]
     performance_schema = PerformanceSchema(many=True)
-    dump = performance_schema.dump(results.items)
-    return render_template("index.html", results=dump, pages=pages)
+    dump = performance_schema.dump(performances.items)
+    return render_template("perfs.html", results=dump, pages=pages)
 
 
-@app.route("/page/<int:page>/<string:query>")
-def get_search_page(page, query):
-    results = search(query=query, page=page)
-    pages = [x for x in results.iter_pages()]
+@app.route("/concert/<int:concert>/<int:page>/<string:query>")
+def get_perf_for_concert_page_query(concert, page, query):
+    performances = search(concert=concert, page=page, query=query)
+    pages = [x for x in performances.iter_pages()]
     performance_schema = PerformanceSchema(many=True)
-    dump = performance_schema.dump(results.items)
-    return render_template("index.html", results=dump, pages=pages, query=query)
+    dump = performance_schema.dump(performances.items)
+    return render_template("perfs.html", results=dump, pages=pages, query=query)
 
 
 """

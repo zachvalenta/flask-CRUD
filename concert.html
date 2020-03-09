@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Flask CRUD</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.css'>
+</head>
+
+<body>
+
+    <!-- TITLE -->
+    <h1>Flask CRUD</h1>
+
+    <!-- LISTVIEW -->
+    <h2>concerts</h2>
+    <table>
+        <thead>
+            <th>id</th>
+            <th>name</th>
+        </thead>
+        <tbody>
+            {% for i in results %}
+            <tr>
+                <td> <a href="{{ url_for('get_perf_for_concert_first_page', concert=i.concert_id) }}"> {{ i.concert_id }} </td> </a>
+                <td>{{ i.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

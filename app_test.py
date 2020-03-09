@@ -40,18 +40,13 @@ TESTS
 """
 
 
-def test_get_index():
-    res = client.get("/")
-    assert res.status_code == 200
-
-
 def test_search():
     db.session.add(Song(name="Slippery When Wet"))
     db.session.add(Artist(name="Commodores"))
     db.session.add(Concert(name="Glastonbury"))
     db.session.add(Performance(rating=randint(5, 10), song_id=1, concert_id=1))
     db.session.commit()
-    res = search(query="Slippery When Wet", page=1)
+    res = search(query="Slippery When Wet", page=1, concert=1)
     assert res.items[0].song.name == "Slippery When Wet"
 
 
