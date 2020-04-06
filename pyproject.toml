@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "skeleton"
+name = "crud"
 version = "0.1.0"
 description = ""
 authors = ["zachvalenta <zjv5002@gmail.com>"]

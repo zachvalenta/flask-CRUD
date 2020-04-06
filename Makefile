@@ -8,6 +8,7 @@ help:
 	@echo
 	@echo "flask:      start built-in Flask dev server"
 	@echo "home:       open home page"
+	@echo "up:         open upload page"
 	@echo "api:        get performance by id"
 	@echo "todo:       view all todos"
 	@echo
@@ -43,6 +44,9 @@ flask:
 
 home:
 	open http://localhost:5000
+
+up:
+	open http://localhost:5000/upload
 
 api:
 	poetry run http http://localhost:5000/api/performances/7

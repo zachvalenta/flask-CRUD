@@ -1,9 +1,20 @@
 import os
+import re
+from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, render_template, request
+from flask import (
+    Flask,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
 
 """
 CONF
@@ -17,8 +28,15 @@ db_uri = "sqlite:///" + db_path
 
 # app - init, config
 app = Flask(__name__, template_folder=basedir)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["UPLOAD_FOLDER"] = f"{basedir}/uploads"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+
+try:
+    Path.cwd().joinpath("uploads").mkdir()
+except FileExistsError:
+    pass
 
 # db - init
 db = SQLAlchemy(app)
@@ -177,3 +195,33 @@ def get_performance_single(id):
     perf = Performance.query.get(id)
     performance_schema = PerformanceSchema()
     return performance_schema.dump(perf)
+
+
+"""
+FILE UPLOAD
+"""
+
+
+@app.route("/upload", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "GET":
+        return render_template("file-upload.html")
+    if request.method == "POST":
+        file = request.files["upload_file"]
+        if file.filename == "":
+            flash("no file selected", "error")
+            return redirect(url_for("upload_file"))
+        elif re.search("^[\w\-\_]*\.txt$", file.filename) is None:
+            flash("only .txt files", "error")
+            return redirect(url_for("upload_file"))
+        else:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(filepath)
+            flash("file successfully uploaded ✅")
+            return redirect(url_for("upload_file"))
+
+
+@app.route("/upload/<filename>")
+def get_upload(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
