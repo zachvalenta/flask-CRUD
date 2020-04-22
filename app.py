@@ -27,7 +27,7 @@ db_path = os.path.join(basedir, os.getenv("DATABASE"))
 db_uri = "sqlite:///" + db_path
 
 # app - init, config
-app = Flask(__name__, template_folder=basedir)
+app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["UPLOAD_FOLDER"] = f"{basedir}/uploads"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
