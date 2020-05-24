@@ -2,6 +2,21 @@
 
 Scaffold for Flask CRUD apps; similar to [another project](https://github.com/zachvalenta/flask-skeleton) I have but with pagination and search.
 
+# todo
+
+Moving models and schemas to separate modules should be simple as:
+
+```python
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+from models import Artist
+from schemas import ArtistSchema
+```
+
+and updating the `flake8` config to ignore `E402` along with the tests and helper scripts to import models/schemas from their own modules instead of `app.py`.
+
+The problem I encountered was that the tests failed *only on the Git hook*.
+
 # how to use?
 
 * __dependencies__: `poetry install`
