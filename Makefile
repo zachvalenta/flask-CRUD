@@ -1,5 +1,7 @@
 .PHONY: test
 
+host = "http://localhost:5000"
+
 help:
 	@echo
 	@echo "======================================================================"
@@ -47,13 +49,13 @@ guni:
 	poetry run gunicorn -b 127.0.0.1:5001 app:app
 
 home:
-	open http://localhost:5000
+	open $(host)
 
 up:
-	open http://localhost:5000/upload
+	open $(host)/upload
 
 api:
-	poetry run http http://localhost:5000/api/performances/7
+	poetry run http $(host)/api/performances/7
 
 todo:
 	rg -i -B 3 -A 3 todo *.py
